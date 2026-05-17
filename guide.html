@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2D Soft Voxel Modular Robot — Guide</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --warn-bg: #3d1a1a;
+    --warn-border: #f85149;
+    --warn-text: #ffa198;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.93); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-title { font-weight: 600; font-size: 0.95rem; }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-links { display: flex; gap: 1.25rem; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  .lang-toggle { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .lang-toggle button { background: none; border: none; color: var(--muted); padding: 4px 14px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all .2s; }
+  .lang-toggle button.active { background: var(--accent); color: #fff; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .section { padding: 3.5rem 0; }
+  .section + .section { border-top: 1px solid var(--border); }
+  .sec-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
+  .sec-tag.green { color: var(--green); }
+  h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: .4rem; }
+  .sec-desc { color: var(--muted); font-size: .95rem; margin-bottom: 2rem; }
+
+  /* ── HERO ── */
+  .hero { padding: 5rem 0 3.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .hero-eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .75rem; }
+  .hero h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.15; margin-bottom: 1rem; }
+  .hero p { color: var(--muted); font-size: 1.05rem; margin-bottom: 1.5rem; }
+  .chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: .78rem; color: var(--muted); }
+  .hero-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .img-card { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); position: relative; background: var(--surface2); }
+  .img-card img { width: 100%; height: 185px; object-fit: cover; display: block; }
+  .img-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem .75rem .5rem; background: linear-gradient(transparent, rgba(0,0,0,.8)); font-size: .75rem; color: #fff; font-weight: 500; }
+
+  /* ── CARDS ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+  .card-icon { font-size: 1.8rem; margin-bottom: .75rem; }
+  .card h3 { font-size: .9rem; font-weight: 600; margin-bottom: .3rem; }
+  .card p, .card small { font-size: .82rem; color: var(--muted); }
+  code { font-family: 'SF Mono','Fira Code',monospace; font-size: .82rem; color: var(--accent); background: var(--surface2); padding: 1px 5px; border-radius: 3px; }
+
+  /* ── MATERIALS ── */
+  .mat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+  .mat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .mat-swatch { height: 8px; }
+  .swatch-ivory  { background: #f5f0e8; }
+  .swatch-black  { background: linear-gradient(135deg, #2a2a2a, #080808); border-bottom: 1px solid #333; }
+  .swatch-green  { background: linear-gradient(135deg, #39ff14, #00cc00); }
+  .swatch-blue   { background: linear-gradient(135deg, #7ec8e3, #b0d9e8); }
+  .mat-body { padding: 1.1rem 1.25rem; }
+  .mat-cat { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .3rem; }
+  .mat-name { font-size: .92rem; font-weight: 600; margin-bottom: .5rem; }
+  .mat-name small { color: var(--muted); font-weight: 400; }
+  .mat-note { font-size: .8rem; color: var(--muted); }
+
+  .cast-note { margin-top: 1.25rem; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid #7ec8e3; border-radius: 8px; padding: 1rem 1.25rem; font-size: .85rem; color: var(--muted); }
+  .cast-note strong { color: var(--text); }
+
+  /* ── PARAM TABLES ── */
+  .param-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  table.param { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  table.param th { text-align: left; padding: .55rem 1rem; background: var(--surface2); color: var(--muted); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+  table.param td { padding: .65rem 1rem; border-top: 1px solid var(--border); }
+  table.param tr:hover td { background: var(--surface2); }
+  .val { font-family: 'SF Mono','Fira Code',monospace; font-size: .88rem; color: var(--green); font-weight: 600; }
+
+  .info-box { background: #0c2d48; border: 1px solid #1f6feb; border-radius: 8px; padding: .9rem 1.1rem; font-size: .84rem; color: #79c0ff; margin-top: .75rem; }
+
+  /* ── SW GRID ── */
+  .sw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .sw-block h3 { font-size: 1rem; font-weight: 600; color: var(--accent); margin-bottom: .6rem; }
+  .sw-block > p { font-size: .84rem; color: var(--muted); margin-bottom: .9rem; }
+
+  /* ── PHASE / STEPS ── */
+  .phases { display: flex; flex-direction: column; gap: 2.5rem; }
+  .phase-hdr { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+  .phase-num { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+  .phase-title { font-size: 1.1rem; font-weight: 600; }
+  .phase-sub { font-size: .82rem; color: var(--muted); }
+  .phase-body { margin-left: 2.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: .65rem; }
+  .bullet-list li { display: flex; gap: .75rem; font-size: .87rem; }
+  .bullet-list li::before { content: '▸'; color: var(--accent); flex-shrink: 0; }
+  .bullet-list li b { color: var(--text); }
+  .bullet-list li span { color: var(--muted); }
+
+  .steps-list { display: flex; flex-direction: column; gap: 1rem; }
+  .step { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+  .step-n { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0; }
+  .step h4 { font-size: .9rem; font-weight: 600; margin-bottom: .35rem; }
+  .step .desc { font-size: .82rem; color: var(--muted); margin-bottom: .5rem; }
+  .step ol { padding-left: 1.2rem; font-size: .82rem; color: var(--muted); display: flex; flex-direction: column; gap: .25rem; }
+  .step ol li b { color: var(--text); }
+
+  /* ── WARNING ── */
+  .warning { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 10px; padding: 1.5rem 1.75rem; margin-top: 1.75rem; }
+  .warn-hdr { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+  .warn-icon { font-size: 1.5rem; }
+  .warn-title { font-size: 1rem; font-weight: 700; color: var(--warn-text); }
+  .warning p { font-size: .87rem; color: var(--warn-text); opacity: .9; margin-bottom: .6rem; }
+  .warning p:last-child { margin-bottom: 0; }
+  .warning b { color: #ff6b6b; }
+  .warning i { opacity: .75; }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; }
+  .tl-row { display: flex; gap: 1.25rem; }
+  .tl-spine { display: flex; flex-direction: column; align-items: center; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 5px; }
+  .tl-dot.now { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .tl-line { width: 2px; background: var(--border); flex: 1; margin: 4px 0; }
+  .tl-row:last-child .tl-line { display: none; }
+  .tl-body { padding-bottom: 1.25rem; }
+  .tl-ver { font-size: .8rem; font-weight: 700; color: var(--accent); margin-bottom: .2rem; }
+  .tl-ver.now { color: var(--green); }
+  .tl-desc { font-size: .84rem; color: var(--muted); }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--muted); font-size: .82rem; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── LANG SWITCH ── */
+  .en, .zh { display: none; }
+  body.lang-en .en { display: block; }
+  body.lang-zh .zh { display: block; }
+  /* inline elements */
+  body.lang-en span.en, body.lang-en a.en { display: inline; }
+  body.lang-zh span.zh, body.lang-zh a.zh { display: inline; }
+  /* list items */
+  body.lang-en li.en { display: list-item; }
+  body.lang-zh li.zh { display: list-item; }
+  /* flex children */
+  body.lang-en .flex-en { display: flex; }
+  body.lang-zh .flex-zh { display: flex; }
+  /* grid overrides */
+  body.lang-en .grid-en { display: grid; }
+  body.lang-zh .grid-zh { display: grid; }
+
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .hero h1 { font-size: 1.9rem; }
+    .sw-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .page { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body class="lang-en">
+
+<!-- NAV -->
+<nav>
+  <span class="nav-title">2D Soft Voxel Robot</span>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#hardware"><span class="en">Hardware</span><span class="zh">硬件</span></a>
+      <a href="#materials"><span class="en">Materials</span><span class="zh">材料</span></a>
+      <a href="#software"><span class="en">Software</span><span class="zh">软件</span></a>
+      <a href="#assembly"><span class="en">Assembly</span><span class="zh">装配</span></a>
+    </div>
+    <div class="lang-toggle">
+      <button class="active" onclick="setLang('en')">EN</button>
+      <button onclick="setLang('zh')">中文</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero section">
+  <div>
+    <div class="hero-eyebrow en">Modular Soft Robotics</div>
+    <div class="hero-eyebrow zh">模块化软体机器人</div>
+    <h1>2D Soft Voxel<br>Modular Robot</h1>
+    <p class="en">A servo-driven gear-rack system where each voxel module actively extends and retracts, enabling coordinated locomotion across a 4×4 module array.</p>
+    <p class="zh">基于舵机与齿轮齿条机构的模块化系统，每个体素模块可主动伸缩，实现 4×4 模块阵列的协同运动。</p>
+    <div class="chips">
+      <span class="chip">Arduino Nano ESP32</span>
+      <span class="chip">PCA9685 · 16CH</span>
+      <span class="chip">AGFRC A06CLS V2</span>
+      <span class="chip">SolidWorks 2025</span>
+      <span class="chip">Bambu Lab</span>
+      <span class="chip">Eco-Flex 10</span>
+    </div>
+  </div>
+  <div class="hero-imgs">
+    <div class="img-card">
+      <img src="figure and video/extended.jpg" alt="Module extended" onerror="this.style.display='none'">
+      <div class="img-caption en">Extended</div>
+      <div class="img-caption zh">伸出状态</div>
+    </div>
+    <div class="img-card">
+      <img src="figure and video/shrinked.jpg" alt="Module retracted" onerror="this.style.display='none'">
+      <div class="img-caption en">Retracted</div>
+      <div class="img-caption zh">收缩状态</div>
+    </div>
+  </div>
+</div>
+
+<!-- HARDWARE -->
+<div class="section" id="hardware">
+  <div class="sec-tag en">Hardware</div>
+  <div class="sec-tag zh">硬件</div>
+  <h2 class="en">Key Components</h2>
+  <h2 class="zh">关键组件</h2>
+  <p class="sec-desc en">Core electronics and mechanical parts for each voxel module.</p>
+  <p class="sec-desc zh">每个体素模块的核心电子与机械组件。</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3 class="en">Servo Motor</h3>
+      <h3 class="zh">舵机</h3>
+      <p>AGFRC A06CLS V2</p>
+      <p class="en"><small>Micro coreless servo</small></p>
+      <p class="zh"><small>微型无铁芯舵机</small></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3 class="en">PWM Driver</h3>
+      <h3 class="zh">PWM 驱动板</h3>
+      <p class="en">815 16-Channel Driver<br><code>PCA9685 · I²C 0x41</code></p>
+      <p class="zh">815 16 路舵机驱动器<br><code>PCA9685 · I²C 0x41</code></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🦷</div>
+      <h3 class="en">Gear System</h3>
+      <h3 class="zh">齿轮系统</h3>
+      <p class="en">Metal rack · 20° PA<br><code>McMaster 3757N35</code></p>
+      <p class="zh">金属齿条 · 20° 压力角<br><code>McMaster 3757N35</code></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <h3 class="en">Microcontroller</h3>
+      <h3 class="zh">微控制器</h3>
+      <p>Arduino Nano ESP32</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖥️</div>
+      <h3 class="en">CAD Software</h3>
+      <h3 class="zh">CAD 软件</h3>
+      <p class="en">SolidWorks 2025<br><small>Open <code>all_assm_1.SLDASM</code></small></p>
+      <p class="zh">SolidWorks 2025<br><small>打开 <code>all_assm_1.SLDASM</code></small></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖨️</div>
+      <h3 class="en">Printer</h3>
+      <h3 class="zh">打印机</h3>
+      <p class="en">Bambu Lab<br><small>See materials section below</small></p>
+      <p class="zh">Bambu Lab<br><small>见下方材料章节</small></p>
+    </div>
+  </div>
+</div>
+
+<!-- MATERIALS -->
+<div class="section" id="materials">
+  <div class="sec-tag en">Fabrication</div>
+  <div class="sec-tag zh">制造</div>
+  <h2 class="en">Printing &amp; Casting Materials</h2>
+  <h2 class="zh">打印与浇筑材料</h2>
+  <p class="sec-desc en">Each part category uses a specific material. Do not substitute — material compliance and color coding are intentional.</p>
+  <p class="sec-desc zh">每类零件使用指定材料，请勿替换——材料的顺应性和颜色编码均为设计所需。</p>
+  <div class="mat-grid">
+    <div class="mat-card">
+      <div class="mat-swatch swatch-ivory"></div>
+      <div class="mat-body">
+        <div class="mat-cat en">Module Main Body · All Structural Parts</div>
+        <div class="mat-cat zh">模块主体 · 所有结构件</div>
+        <div class="mat-name">Bambu Lab PLA Matte<br><small>Ivory White</small></div>
+        <div class="mat-note en">Standard FDM print. Rigid structural frame for all non-gear, non-connector parts.</div>
+        <div class="mat-note zh">标准 FDM 打印。用于所有非齿条、非连接件的刚性结构框架。</div>
+      </div>
+    </div>
+    <div class="mat-card">
+      <div class="mat-swatch swatch-black"></div>
+      <div class="mat-body">
+        <div class="mat-cat en">All Gear Racks · Curved &amp; Offset Variants</div>
+        <div class="mat-cat zh">所有齿条 · 曲线及偏置款</div>
+        <div class="mat-name">Bambu Lab TPU 95A<br><small>Black</small></div>
+        <div class="mat-note en">Flexible. Improves gear mesh compliance and reduces operating noise.</div>
+        <div class="mat-note zh">柔性耗材。改善齿轮啮合顺应性，有效降低运行噪音。</div>
+      </div>
+    </div>
+    <div class="mat-card">
+      <div class="mat-swatch swatch-green"></div>
+      <div class="mat-body">
+        <div class="mat-cat en">Connectors · connector.STL, connector1.STL</div>
+        <div class="mat-cat zh">连接件 · connector.STL, connector1.STL</div>
+        <div class="mat-name">Bambu Lab PLA<br><small>Glow Green</small></div>
+        <div class="mat-note en">Distinctive color for fast visual identification of inter-module connection points.</div>
+        <div class="mat-note zh">醒目颜色，便于快速识别模块间连接点。</div>
+      </div>
+    </div>
+    <div class="mat-card">
+      <div class="mat-swatch swatch-blue"></div>
+      <div class="mat-body">
+        <div class="mat-cat en">Cover Molding · hardware model/cover molding/</div>
+        <div class="mat-cat zh">外壳模具零件 · hardware model/cover molding/</div>
+        <div class="mat-name">Eco-Flex 10 <small>(Smooth-On)</small><br><small>Cast Molding Only</small></div>
+        <div class="mat-note en">⚠ Do <b>NOT</b> 3D print these parts. Silicone casting only.</div>
+        <div class="mat-note zh">⚠ 此类零件<b>禁止</b> 3D 打印，必须硅胶浇筑成型。</div>
+      </div>
+    </div>
+  </div>
+  <div class="cast-note">
+    <strong class="en">Casting Procedure:</strong>
+    <strong class="zh">浇筑流程：</strong>
+    <span class="en"> Print mold halves (<code>bottom.STL</code> + <code>up.STL</code> in <code>hardware model/cover molding/print/</code>) in PLA. Mix Eco-Flex 10 Part A &amp; B per the Smooth-On datasheet, pour into the mold, and cure fully before demolding.</span>
+    <span class="zh"> 用 PLA 打印模具两半（<code>hardware model/cover molding/print/</code> 下的 <code>bottom.STL</code> 和 <code>up.STL</code>），按 Smooth-On 数据手册混合 A、B 两组分，浇入模具后待完全固化再脱模。</span>
+  </div>
+</div>
+
+<!-- SOFTWARE -->
+<div class="section" id="software">
+  <div class="sec-tag en">Firmware</div>
+  <div class="sec-tag zh">固件</div>
+  <h2 class="en">Software Guide</h2>
+  <h2 class="zh">软件说明</h2>
+  <p class="sec-desc en">Two Arduino sketches — use <code>certain_angle</code> during assembly calibration, <code>16_module</code> for full operation.</p>
+  <p class="sec-desc zh">两个 Arduino 程序——装配校准阶段使用 <code>certain_angle</code>，整机运行使用 <code>16_module</code>。</p>
+  <div class="sw-grid">
+    <!-- 16_module -->
+    <div class="sw-block">
+      <h3>code/16_module</h3>
+      <p class="en">Controls all 16 servos via PCA9685 with a sinusoidal gait. Each servo's <code>servoSign[]</code> sets its extend/retract phase within the 4×4 array.</p>
+      <p class="zh">通过 PCA9685 以正弦步态控制全部 16 路舵机，每路舵机的 <code>servoSign[]</code> 决定其在 4×4 阵列中的伸缩相位。</p>
+      <!-- EN table -->
+      <div class="param-wrap en">
+        <table class="param">
+          <thead><tr><th>Parameter</th><th>Value</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>PWM_FREQ</code></td><td><span class="val">333 Hz</span></td><td>Servo PWM frequency</td></tr>
+            <tr><td><code>CENTER_ANGLE</code></td><td><span class="val">−45°</span></td><td>Oscillation center</td></tr>
+            <tr><td><code>AMPLITUDE</code></td><td><span class="val">45°</span></td><td>Peak deviation</td></tr>
+            <tr><td><code>FREQUENCY</code></td><td><span class="val">1.0 Hz</span></td><td>Oscillation rate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- ZH table -->
+      <div class="param-wrap zh">
+        <table class="param">
+          <thead><tr><th>参数</th><th>值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>PWM_FREQ</code></td><td><span class="val">333 Hz</span></td><td>舵机 PWM 频率</td></tr>
+            <tr><td><code>CENTER_ANGLE</code></td><td><span class="val">−45°</span></td><td>振荡中心位置</td></tr>
+            <tr><td><code>AMPLITUDE</code></td><td><span class="val">45°</span></td><td>峰值幅度</td></tr>
+            <tr><td><code>FREQUENCY</code></td><td><span class="val">1.0 Hz</span></td><td>振荡频率</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box en">Wiring: Connect PCA9685 to SDA/SCL. I²C address: <code style="color:#58a6ff">0x41</code></div>
+      <div class="info-box zh">接线：将 PCA9685 连接至 SDA/SCL 引脚，I²C 地址：<code style="color:#58a6ff">0x41</code></div>
+    </div>
+    <!-- certain_angle -->
+    <div class="sw-block">
+      <h3>code/certain_angle</h3>
+      <p class="en">Sets one servo (pin <code>A3</code>) to a fixed angle via 14-bit PWM at 333 Hz. Use exclusively during assembly calibration — not for multi-servo control.</p>
+      <p class="zh">通过 14 位 PWM（333 Hz）将引脚 <code>A3</code> 上的舵机设置到固定角度。仅用于装配校准阶段，不用于多舵机控制。</p>
+      <!-- EN table -->
+      <div class="param-wrap en">
+        <table class="param">
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td><code>TRIM_US</code></td><td><span class="val">0.0 µs</span></td></tr>
+            <tr><td><code>NEUTRAL_US</code></td><td><span class="val">1520 µs</span></td></tr>
+            <tr><td><code>MIN_US</code></td><td><span class="val">500 µs</span></td></tr>
+            <tr><td><code>MAX_US</code></td><td><span class="val">2500 µs</span></td></tr>
+            <tr><td><code>PWM_RES</code></td><td><span class="val">14-bit</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- ZH table -->
+      <div class="param-wrap zh">
+        <table class="param">
+          <thead><tr><th>参数</th><th>值</th></tr></thead>
+          <tbody>
+            <tr><td><code>TRIM_US</code></td><td><span class="val">0.0 µs</span></td></tr>
+            <tr><td><code>NEUTRAL_US</code></td><td><span class="val">1520 µs</span></td></tr>
+            <tr><td><code>MIN_US</code></td><td><span class="val">500 µs</span></td></tr>
+            <tr><td><code>MAX_US</code></td><td><span class="val">2500 µs</span></td></tr>
+            <tr><td><code>PWM_RES</code></td><td><span class="val">14-bit</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box en">Open Serial Monitor at <b>115200 baud</b> to verify computed pulse width for each angle.</div>
+      <div class="info-box zh">以 <b>115200 波特率</b>打开串口监视器，可验证每个角度对应的计算脉冲宽度。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSEMBLY GUIDE -->
+<div class="section" id="assembly">
+  <div class="sec-tag green en">Assembly Guide</div>
+  <div class="sec-tag green zh">装配指南</div>
+  <h2 class="en">Module Calibration &amp; Assembly</h2>
+  <h2 class="zh">模块校准与装配</h2>
+  <p class="sec-desc en">Follow this workflow precisely. Identical kinematics across all modules depend on it.</p>
+  <p class="sec-desc zh">严格遵循以下流程，所有模块的运动学一致性取决于此。</p>
+
+  <div class="phases">
+    <!-- PHASE 1 -->
+    <div>
+      <div class="phase-hdr">
+        <div class="phase-num">1</div>
+        <div>
+          <div class="phase-title en">Direct Microcontroller Calibration</div>
+          <div class="phase-title zh">直接通过微控制器校准</div>
+          <div class="phase-sub en">No PCA9685 required at this stage</div>
+          <div class="phase-sub zh">此阶段无需使用 PCA9685</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul class="bullet-list">
+          <li class="en"><div><b>Do NOT use the PCA9685 board.</b> <span>Connect servo signal lines directly to the Arduino Nano ESP32 GPIO pins.</span></div></li>
+          <li class="zh"><div><b>禁止使用 PCA9685 驱动板。</b> <span>将舵机信号线直接连接至 Arduino Nano ESP32 的 GPIO 引脚。</span></div></li>
+          <li class="en"><div><b>Power source:</b> <span>USB only. Do not connect any external power supply.</span></div></li>
+          <li class="zh"><div><b>供电方式：</b> <span>仅 USB 供电，暂勿接入任何外部电源。</span></div></li>
+          <li class="en"><div><b>Software:</b> <span>Use <code>certain_angle</code> only. Do not run <code>16_module</code> yet.</span></div></li>
+          <li class="zh"><div><b>软件控制：</b> <span>只运行 <code>certain_angle</code>，暂勿运行 <code>16_module</code>。</span></div></li>
+          <li class="en"><div><b>Why?</b> <span>Minimal hardware eliminates I2C errors and PCA9685 configuration issues during mechanical alignment.</span></div></li>
+          <li class="zh"><div><b>原因：</b> <span>最小化硬件依赖，消除机械对准阶段的 I2C 通信错误及扩展板配置问题。</span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div>
+      <div class="phase-hdr">
+        <div class="phase-num">2</div>
+        <div>
+          <div class="phase-title en">Step-by-Step Calibration &amp; Assembly</div>
+          <div class="phase-title zh">逐步校准与装配</div>
+          <div class="phase-sub en">Repeat all three steps for every module</div>
+          <div class="phase-sub zh">每个模块均需重复执行以下三步</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="steps-list">
+          <!-- Step 1 -->
+          <div class="step">
+            <div class="step-n">1</div>
+            <div>
+              <h4 class="en">Servo Initial Zeroing</h4>
+              <h4 class="zh">舵机初始归零</h4>
+              <p class="desc en">Zero the servo spline before installing it into the module casing to prevent mechanical binding post-assembly.</p>
+              <p class="desc zh">在装入模块外壳之前将舵机花键归零，防止装配后出现机械卡死。</p>
+              <ol class="en">
+                <li>Connect the servo directly to the Arduino Nano ESP32.</li>
+                <li>Run <code>certain_angle</code> and set the target angle to <b>−90 degrees</b>.</li>
+                <li>Wait until the servo fully <b>settles and locks</b> before proceeding.</li>
+              </ol>
+              <ol class="zh">
+                <li>将舵机直接连接至 Arduino Nano ESP32。</li>
+                <li>运行 <code>certain_angle</code>，将目标角度设为 <b>−90 度</b>。</li>
+                <li>等待舵机完全<b>到达并锁定</b>该位置后，再进行下一步。</li>
+              </ol>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="step">
+            <div class="step-n">2</div>
+            <div>
+              <h4 class="en">Reference Deconstruction &amp; Observation</h4>
+              <h4 class="zh">参考模块拆解与观察</h4>
+              <p class="desc en">Use an existing correctly-built module as a visual reference for servo horn alignment.</p>
+              <p class="desc zh">以一个已验证正常的模块作为摆臂对准的视觉基准。</p>
+              <ol class="en">
+                <li>Carefully disassemble the reference module.</li>
+                <li>Document the exact <b>relative orientation</b> of servo horn vs. body at −90°.</li>
+                <li>Note spline tooth engagement to prevent gear-tooth offset in new modules.</li>
+              </ol>
+              <ol class="zh">
+                <li>仔细拆解参考模块。</li>
+                <li>记录舵机摆臂与本体在 −90° 时的<b>精确相对朝向</b>。</li>
+                <li>注意花键齿啮合位置，防止新模块出现齿位偏移。</li>
+              </ol>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="step">
+            <div class="step-n">3</div>
+            <div>
+              <h4 class="en">Calibrated Module Assembly</h4>
+              <h4 class="zh">校准后的模块装配</h4>
+              <p class="desc en">With the servo zeroed and reference alignment known, assemble the physical module.</p>
+              <p class="desc zh">完成舵机归零和参考对准后，进行实物组装。</p>
+              <ol class="en">
+                <li>Mount the servo horn, duplicating the reference angle observed in Step 2.</li>
+                <li><b>Verify internal component consistency</b> — all linkage positions must match across modules.</li>
+                <li>Tighten all screws to eliminate backlash, rotational slop, and structural shifting.</li>
+              </ol>
+              <ol class="zh">
+                <li>安装舵机摆臂，复现步骤 2 中观察到的参考角度。</li>
+                <li><b>核查内部零件一致性</b>——各模块内所有连杆位置必须完全相同。</li>
+                <li>拧紧所有螺钉，消除机械间隙、旋转松旷和结构偏移。</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safety Warning -->
+        <div class="warning">
+          <div class="warn-hdr">
+            <span class="warn-icon">⚠️</span>
+            <span class="warn-title en">CRITICAL SAFETY WARNING — POWER SEQUENCE</span>
+            <span class="warn-title zh">重要安全警告 — 供电顺序</span>
+          </div>
+          <p class="en"><b>STOP.</b> Do not connect the battery or proceed to full-system testing until <b>all individual modules</b> have been calibrated, assembled, and verified using <b>USB power only</b>.</p>
+          <p class="zh"><b>停止。</b>在<b>所有单模块</b>均已通过 <b>USB 供电</b>完成校准、装配和验证之前，禁止连接电池或进行整机测试。</p>
+          <p class="en">Verify that all logic, commands, and servo movements function correctly before connecting the battery. An undetected short circuit under battery power may cause <b>permanent damage</b> to the microcontroller and surrounding electronics.</p>
+          <p class="zh">连接电池前，必须确认所有系统逻辑、控制指令及舵机动作均正常。若存在未发现的短路，电池供电时将导致微控制器及周边电子元件<b>永久损坏</b>。</p>
+          <p><i class="en">Only after all modules pass USB-powered testing should the battery be connected.</i><i class="zh">只有当所有的模块在仅仅通过 USB 给 Arduino Nano ESP32 供电调试好之后，才能去连接电池进行下一步。</i></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="section" id="history">
+  <div class="sec-tag en">History</div>
+  <div class="sec-tag zh">历史</div>
+  <h2 class="en">Design History</h2>
+  <h2 class="zh">设计历史</h2>
+  <p class="sec-desc en">Previous iterations are preserved in <code>previous hardware model (OLD)/</code> for reference.</p>
+  <p class="sec-desc zh">历次迭代均保存于 <code>previous hardware model (OLD)/</code> 中，仅供参考。</p>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-ver">v1 – v2</div><div class="tl-desc en">Early gear-rack concepts and initial structural exploration.</div><div class="tl-desc zh">早期齿轮齿条概念验证与初始结构探索。</div></div></div>
+    <div class="tl-row"><div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-ver">v3</div><div class="tl-desc en">Refined gear geometry; separate servo mount introduced.</div><div class="tl-desc zh">齿轮几何优化；引入独立舵机安装座。</div></div></div>
+    <div class="tl-row"><div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-ver">v4</div><div class="tl-desc en">Plastic gear set explored; magnet-based connectors tested.</div><div class="tl-desc zh">探索塑料齿轮方案；尝试磁性连接件。</div></div></div>
+    <div class="tl-row"><div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-ver">v5</div><div class="tl-desc en">Near-final layout; battery and board assembly integrated.</div><div class="tl-desc zh">接近最终布局；电池与驱动板装配体集成入模块。</div></div></div>
+    <div class="tl-row"><div class="tl-spine"><div class="tl-dot now"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-ver now en">v6 — Current</div><div class="tl-ver now zh">v6 — 当前版本</div><div class="tl-desc en">Streamlined assembly, improved cover molding, mirrored rack geometry. All source files in <code>hardware model/soft_voxel_newest version (v6)/</code></div><div class="tl-desc zh">简化装配、改进外壳模具、采用镜像齿条几何。源文件位于 <code>hardware model/soft_voxel_newest version (v6)/</code></div></div></div>
+  </div>
+</div>
+
+</div><!-- .page -->
+
+<footer>
+  <p class="en">2D Soft Voxel Modular Robot &nbsp;·&nbsp; <a href="https://github.com/SylvesterZHANG007/2d-soft-voxel" target="_blank">GitHub Repository</a> &nbsp;·&nbsp; Released for research and educational use.</p>
+  <p class="zh">2D 软体体素模块化机器人 &nbsp;·&nbsp; <a href="https://github.com/SylvesterZHANG007/2d-soft-voxel" target="_blank">GitHub 仓库</a> &nbsp;·&nbsp; 供研究和教育用途开放使用。</p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.body.className = 'lang-' + lang;
+    document.querySelectorAll('.lang-toggle button').forEach((b, i) => {
+      b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'zh' && i === 1));
+    });
+  }
+</script>
+</body>
+</html>
