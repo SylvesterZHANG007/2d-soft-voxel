@@ -200,15 +200,12 @@
   /* inline elements */
   body.lang-en span.en, body.lang-en a.en { display: inline; }
   body.lang-zh span.zh, body.lang-zh a.zh { display: inline; }
-  /* list items */
-  body.lang-en li.en { display: list-item; }
-  body.lang-zh li.zh { display: list-item; }
-  /* flex children */
-  body.lang-en .flex-en { display: flex; }
-  body.lang-zh .flex-zh { display: flex; }
-  /* grid overrides */
-  body.lang-en .grid-en { display: grid; }
-  body.lang-zh .grid-zh { display: grid; }
+  /* list items — flex because bullet-list uses flex layout */
+  body.lang-en li.en { display: flex; }
+  body.lang-zh li.zh { display: flex; }
+  /* inline semantic elements */
+  body.lang-en i.en, body.lang-en b.en, body.lang-en strong.en { display: inline; }
+  body.lang-zh i.zh, body.lang-zh b.zh, body.lang-zh strong.zh { display: inline; }
 
   @media (max-width: 720px) {
     .hero { grid-template-columns: 1fr; gap: 2rem; }
@@ -344,7 +341,7 @@
       <div class="mat-body">
         <div class="mat-cat en">Module Main Body · All Structural Parts</div>
         <div class="mat-cat zh">模块主体 · 所有结构件</div>
-        <div class="mat-name">Bambu Lab PLA Matte<br><small>Ivory White</small></div>
+        <div class="mat-name">Bambu Lab PLA Matte<br><small class="en">Ivory White</small><small class="zh">象牙白</small></div>
         <div class="mat-note en">Standard FDM print. Rigid structural frame for all non-gear, non-connector parts.</div>
         <div class="mat-note zh">标准 FDM 打印。用于所有非齿条、非连接件的刚性结构框架。</div>
       </div>
@@ -354,7 +351,7 @@
       <div class="mat-body">
         <div class="mat-cat en">All Gear Racks · Curved &amp; Offset Variants</div>
         <div class="mat-cat zh">所有齿条 · 曲线及偏置款</div>
-        <div class="mat-name">Bambu Lab TPU 95A<br><small>Black</small></div>
+        <div class="mat-name">Bambu Lab TPU 95A<br><small class="en">Black</small><small class="zh">黑色</small></div>
         <div class="mat-note en">Flexible. Improves gear mesh compliance and reduces operating noise.</div>
         <div class="mat-note zh">柔性耗材。改善齿轮啮合顺应性，有效降低运行噪音。</div>
       </div>
@@ -364,7 +361,7 @@
       <div class="mat-body">
         <div class="mat-cat en">Connectors · connector.STL, connector1.STL</div>
         <div class="mat-cat zh">连接件 · connector.STL, connector1.STL</div>
-        <div class="mat-name">Bambu Lab PLA<br><small>Glow Green</small></div>
+        <div class="mat-name">Bambu Lab PLA<br><small class="en">Glow Green</small><small class="zh">荧光绿</small></div>
         <div class="mat-note en">Distinctive color for fast visual identification of inter-module connection points.</div>
         <div class="mat-note zh">醒目颜色，便于快速识别模块间连接点。</div>
       </div>
@@ -374,7 +371,7 @@
       <div class="mat-body">
         <div class="mat-cat en">Cover Molding · hardware model/cover molding/</div>
         <div class="mat-cat zh">外壳模具零件 · hardware model/cover molding/</div>
-        <div class="mat-name">Eco-Flex 10 <small>(Smooth-On)</small><br><small>Cast Molding Only</small></div>
+        <div class="mat-name">Eco-Flex 10 <small>(Smooth-On)</small><br><small class="en">Cast Molding Only</small><small class="zh">仅浇筑成型</small></div>
         <div class="mat-note en">⚠ Do <b>NOT</b> 3D print these parts. Silicone casting only.</div>
         <div class="mat-note zh">⚠ 此类零件<b>禁止</b> 3D 打印，必须硅胶浇筑成型。</div>
       </div>
@@ -587,7 +584,8 @@
           <p class="zh"><b>停止。</b>在<b>所有单模块</b>均已通过 <b>USB 供电</b>完成校准、装配和验证之前，禁止连接电池或进行整机测试。</p>
           <p class="en">Verify that all logic, commands, and servo movements function correctly before connecting the battery. An undetected short circuit under battery power may cause <b>permanent damage</b> to the microcontroller and surrounding electronics.</p>
           <p class="zh">连接电池前，必须确认所有系统逻辑、控制指令及舵机动作均正常。若存在未发现的短路，电池供电时将导致微控制器及周边电子元件<b>永久损坏</b>。</p>
-          <p><i class="en">Only after all modules pass USB-powered testing should the battery be connected.</i><i class="zh">只有当所有的模块在仅仅通过 USB 给 Arduino Nano ESP32 供电调试好之后，才能去连接电池进行下一步。</i></p>
+          <p class="en"><i>Only after all modules pass USB-powered testing should the battery be connected.</i></p>
+          <p class="zh"><i>只有当所有的模块在仅仅通过 USB 给 Arduino Nano ESP32 供电调试好之后，才能去连接电池进行下一步。</i></p>
         </div>
       </div>
     </div>
