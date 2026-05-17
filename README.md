@@ -1,5 +1,7 @@
 # 2D Soft Voxel Modular Robot
 
+**[📖 Open Interactive Guide →](https://sylvesterzhang007.github.io/2d-soft-voxel/)**
+
 A 2D soft voxel modular robot system driven by servo motors and gear-rack mechanisms. Each voxel module can actively extend and retract, enabling coordinated multi-module locomotion patterns.
 
 ## Repository Structure
@@ -163,6 +165,8 @@ This project is released for research and educational use. If you build on this 
 ---
 
 # 2D 软体体素模块化机器人（中文版）
+
+**[📖 打开可视化指导页面 →](https://sylvesterzhang007.github.io/2d-soft-voxel/)**
 
 基于舵机与齿轮齿条机构驱动的 2D 软体体素模块化机器人系统。每个体素模块可主动伸缩，实现多模块协同运动。
 
