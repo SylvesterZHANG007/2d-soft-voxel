@@ -95,6 +95,58 @@ Previous hardware iterations are preserved in `previous hardware model (OLD)/` f
 
 `figure and video/` contains reference photos (`extended.jpg`, `shrinked.jpg`) and a demo video (`single module move.MOV`) showing a single voxel extending and retracting.
 
+## Module Calibration and Assembly Guide
+
+This guide outlines the standardized protocol for calibrating the servo motors and assembling the individual modules for the **2d-soft-voxel** robot.
+
+To ensure identical kinematics, predictable behavior, and structural consistency across all modules, you must follow the precise hardware and software separation workflow described below.
+
+---
+
+### Phase 1: Direct Microcontroller Calibration (No PCA9685 Required)
+
+During this initial mechanical alignment and single-module assembly phase, **DO NOT** use the PCA9685 PWM driver board.
+
+The calibration and initial testing of individual module servos must be performed by connecting the servo signal lines **directly** to the designated GPIO pins of the Arduino Nano ESP32.
+
+* **Power Source:** Power the microcontroller solely via the computer's USB port. Do not connect any external power supplies yet.
+* **Software Control:** At this stage, exclusively use the `certain_angle` script/function to command and calibrate the servos. Do not attempt to run complex multi-servo coordination codes yet.
+* **Why this approach?** This isolates the system to minimal hardware and software dependencies, drastically reducing troubleshooting complexity and preventing configuration or I2C communication errors on the expansion board during structural alignment.
+
+---
+
+### Phase 2: Step-by-Step Calibration and Assembly
+
+#### Step 1: Servo Initial Zeroing
+Before integrating any servo motor into a module casing, its spline position must be precisely zeroed to avoid mechanical binding or restricted range of motion post-assembly.
+1. Connect the target servo directly to the Arduino Nano ESP32.
+2. Run the `certain_angle` script to command the servo to its baseline calibration position (set the target angle to **-90 degrees**).
+3. Ensure the servo motor has fully reached, settled, and locked into this position before disconnecting the setup or moving to mechanical installation.
+
+#### Step 2: Reference Deconstruction and Observation
+If you are replicating an existing reference module or scaling up production, use a proven module as your visual anchor:
+1. Take an existing, correctly operating reference module and carefully disassemble/deconstruct it.
+2. Closely observe and document the exact **relative orientation and mounting alignment** between the servo horn (arm) and the servo body at the -90-degree baseline.
+3. Note the precise spline tooth engagement to ensure the newly assembled modules do not suffer from a gear-tooth offset.
+
+#### Step 3: Calibrated Module Assembly
+With the servo zeroed and the reference alignment understood, proceed to physical fabrication:
+1. Mate the new servo horn onto the newly calibrated servo shaft, carefully duplicating the relative angle observed during the reference deconstruction in Step 2.
+2. **Ensure Internal Component Consistency**: During final structural fastening, double-check that the relative positions of all internal components and linkages across different modules are completely identical and uniform.
+3. Securely tighten all mounting screws while maintaining this alignment to eliminate any mechanical backlash, rotational slop, or structural shifting.
+
+---
+
+### ⚠️ CRITICAL SAFETY WARNING: POWER SEQUENCE
+
+> **STOP:** Do not proceed to full-system testing or connect the high-current battery source until **all individual modules** have been successfully calibrated, assembled, and verified using **ONLY USB power** (via the Arduino Nano ESP32).
+>
+> Always verify that the system logic, control commands, and individual servo movements function flawlessly under safe USB power limits before connecting the battery. Failure to strictly follow this power sequence can result in permanent damage to the microcontroller and surrounding electronics in the event of an undetected short circuit.
+>
+> *只有当所有的模块在仅仅通过 USB 给 Arduino Nano ESP32 供电调试好之后，才能去连接电池进行下一步。*
+
+---
+
 ## License
 
 This project is released for research and educational use. If you build on this design, a citation or acknowledgment is appreciated.
