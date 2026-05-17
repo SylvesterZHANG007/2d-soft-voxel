@@ -46,6 +46,17 @@ All print-ready STL/3MF files are in `print/`. Key parts:
 | `board support1.STL` | PCB mounting support |
 | `switch_v5.STL` | Power switch housing |
 
+### Printing and Casting Materials
+
+| Part Category | Material | Notes |
+|---------------|----------|-------|
+| Module main body (all structural parts) | Bambu Lab PLA Matte — Ivory White | Standard FDM print |
+| All gear racks (`gear rack_curve`, `gear rack_curve_offset`, and mirrored variants) | Bambu Lab TPU 95A — Black | Flexible; improves gear mesh compliance and reduces noise |
+| Connectors (`connector.STL`, `connector1.STL`) | Bambu Lab PLA — Glow Green | Easy visual identification between modules |
+| Cover molding parts (`hardware model/cover molding/`) | Eco-Flex 10 (Smooth-On) | Cast molding — do not 3D print these parts |
+
+**Casting Note:** The cover molding components are designed for silicone casting using Eco-Flex 10. Print the mold halves (`bottom.STL`, `up.STL` in `hardware model/cover molding/print/`) in PLA, mix and pour Eco-Flex 10 per the manufacturer's datasheet, and allow to cure fully before demolding.
+
 ### SolidWorks Source Files
 `hardware model/soft_voxel_newest version (v6)/` contains the full parametric SolidWorks assembly (`all_assm_1.SLDASM`) and all constituent part files (`.SLDPRT`). Open `all_assm_1.SLDASM` in SolidWorks 2025.
 
@@ -199,8 +210,19 @@ This project is released for research and educational use. If you build on this 
 | `board support1.STL` | PCB 安装支撑 |
 | `switch_v5.STL` | 电源开关壳体 |
 
+### 打印与浇筑材料
+
+| 零件类别 | 材料 | 备注 |
+|----------|------|------|
+| 模块主体（所有结构件） | Bambu Lab PLA Matte — 象牙白（Ivory White） | 标准 FDM 打印 |
+| 所有齿条（`gear rack_curve`、`gear rack_curve_offset` 及镜像件） | Bambu Lab TPU 95A — 黑色（Black） | 柔性材料；改善齿轮啮合顺应性，降低噪音 |
+| 连接件（`connector.STL`、`connector1.STL`） | Bambu Lab PLA — 荧光绿（Glow Green） | 便于各模块之间的视觉识别 |
+| 外壳模具零件（`hardware model/cover molding/`） | Eco-Flex 10（Smooth-On） | 浇筑成型——此类零件不得 3D 打印 |
+
+**浇筑说明：** 外壳覆盖层零件设计为使用 Eco-Flex 10 进行硅胶浇筑成型。先用 PLA 打印模具两半（`hardware model/cover molding/print/` 下的 `bottom.STL` 和 `up.STL`），按厂商数据手册混合并浇注 Eco-Flex 10，待其完全固化后再脱模。
+
 ### SolidWorks 源文件
-`hardware model/soft_voxel_newest version (v6)/` 包含完整的参数化 SolidWorks 装配体（`all_assm_1.SLDASM`）及所有零件文件（`.SLDPRT`）。请使用 SolidWorks 2021 或更高版本打开 `all_assm_1.SLDASM`。
+`hardware model/soft_voxel_newest version (v6)/` 包含完整的参数化 SolidWorks 装配体（`all_assm_1.SLDASM`）及所有零件文件（`.SLDPRT`）。请使用 SolidWorks 2025 打开 `all_assm_1.SLDASM`。
 
 ## 软件
 
