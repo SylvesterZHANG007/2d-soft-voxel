@@ -28,7 +28,7 @@ A 2D soft voxel modular robot system driven by servo motors and gear-rack mechan
 | Servo | AGFRC A06CLS V2 (micro coreless servo) |
 | PWM Driver | 815 16-Channel Servo Driver (PCA9685-based, I²C address `0x41`) |
 | Gear System | Metal gear rack — 20° pressure angle (McMaster-Carr `3757N35`) |
-| Microcontroller | Arduino-compatible board (Teensy / Arduino Nano tested) |
+| Microcontroller | Arduino Nano ESP32 |
 
 ### 3D Printing (current version — v6)
 All print-ready STL/3MF files are in `print/`. Key parts:
@@ -47,7 +47,7 @@ All print-ready STL/3MF files are in `print/`. Key parts:
 | `switch_v5.STL` | Power switch housing |
 
 ### SolidWorks Source Files
-`hardware model/soft_voxel_newest version (v6)/` contains the full parametric SolidWorks assembly (`all_assm_1.SLDASM`) and all constituent part files (`.SLDPRT`). Open `all_assm_1.SLDASM` in SolidWorks 2021 or later.
+`hardware model/soft_voxel_newest version (v6)/` contains the full parametric SolidWorks assembly (`all_assm_1.SLDASM`) and all constituent part files (`.SLDPRT`). Open `all_assm_1.SLDASM` in SolidWorks 2025.
 
 ## Software
 
@@ -142,8 +142,6 @@ With the servo zeroed and the reference alignment understood, proceed to physica
 > **STOP:** Do not proceed to full-system testing or connect the high-current battery source until **all individual modules** have been successfully calibrated, assembled, and verified using **ONLY USB power** (via the Arduino Nano ESP32).
 >
 > Always verify that the system logic, control commands, and individual servo movements function flawlessly under safe USB power limits before connecting the battery. Failure to strictly follow this power sequence can result in permanent damage to the microcontroller and surrounding electronics in the event of an undetected short circuit.
->
-> *只有当所有的模块在仅仅通过 USB 给 Arduino Nano ESP32 供电调试好之后，才能去连接电池进行下一步。*
 
 ---
 
